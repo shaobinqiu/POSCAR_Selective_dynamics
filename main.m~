@@ -1,0 +1,26 @@
+clear
+n_F=48;
+poscar=import_poscar('/home/qiusb/Documents/sagar_190115/sagar/sagar/crystal/latticematching_files/output/POSCAR1.vasp');
+coords=[poscar.coords(1:poscar.atomcount(1,1),:);sortrows(poscar.comment(poscar.atomcount(1,1)+1:end),3)];
+n=['./POSCAR_D.vasp'];
+fid=fopen(n,'w+');
+fprintf(fid,[poscar.comment '\n']);
+fprintf(fid,'%g\n',1);
+fprintf(fid,'%-4.6f     %-4.6f     %-4.6f\n',poscar.lattice');
+for kk=1:size(poscar.symbols,2)
+    fprintf(fid,'%s     ',poscar.symbols{1,kk}); 
+end
+fprintf(fid, '\n');
+for kk=1:size(poscar.atomcount,1)
+     fprintf(fid,'%g     ',poscar.atomcount(kk,1)); 
+end
+fprintf(fid, '\n');
+fprintf(fid,'Selective dynamics\n');
+fprintf(fid,'Direct\n');
+for vv=1:size(poscar.coords,1)-n_F
+    fprintf(fid,'%-4.6f     %-4.6f     %-4.6f     T    T    T \n',poscar.coords(vv,:)');
+end
+for vv=size(poscar.coords,1)-n_F+1:size(poscar.coords,1)
+    fprintf(fid,'%-4.6f     %-4.6f     %-4.6f     F    F    F \n',poscar.coords(vv,:)');
+end
+fclose(fid);

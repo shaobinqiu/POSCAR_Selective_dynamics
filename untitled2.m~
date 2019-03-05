@@ -1,0 +1,27 @@
+clear%%%distinguish up and down atoms
+for jj=1:6
+poscar=import_poscar(['/home/qiusb/Desktop/CONTCAR',num2str(jj)]);
+a=sortrows(poscar.coords( 1:poscar.,:),-3 );
+coords=[a;poscar.coords(19:end,:)];
+nn=0;
+for ii=1:size(a,1)
+    if a(ii,3)>sum(a(:,3))/size(a,1)
+        nn=nn+1;
+    end
+end
+%coords(:,1:2)=coords(:,1:2)-repmat([0.16667  0.33333 ],98,1);
+n=['./CONTCAR', num2str(jj) ];
+fid=fopen(n,'w+');
+fprintf(fid,[poscar.comment '\n']);
+fprintf(fid,'%g\n',1);
+fprintf(fid,'%-4.6f     %-4.6f     %-4.6f\n',poscar.lattice'); 
+fprintf(fid,'%s     ','Si C Ag'); 
+fprintf(fid, '\n');
+fprintf(fid,'%g     ',[nn,18-nn,80]); 
+fprintf(fid, '\n');
+fprintf(fid,'Direct\n');
+for vv=1:size(poscar.coords,1)
+    fprintf(fid,'%-4.6f     %-4.6f     %-4.6f  \n', coords(vv,:)');
+end
+fclose(fid);
+end
